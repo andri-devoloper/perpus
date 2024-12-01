@@ -17,7 +17,7 @@
                         {{ $subs->rack->name_rack ?? 'Rak Tidak Ditemukan' }}</td>
                     <td
                         class="text-sm text-secondary-light fw-normal text-center d-flex align-items-center justify-content-center gap-1">
-                        
+
                         <div>
                             <a href="{{ route('subs.show', $subs->id) }}"
                                 class="w-32-px h-32-px bg-primary-light text-primary-600 rounded-circle d-inline-flex align-items-center justify-content-center">

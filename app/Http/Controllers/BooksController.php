@@ -6,6 +6,7 @@ use App\Models\BooksModel;
 use App\Models\CategoryModel;
 use App\Models\RackModel;
 use App\Models\SubModel;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -21,7 +22,7 @@ class BooksController extends Controller
 
     public function Get_Subs(Request $req)
     {
-        $subs = SubModel::where('id_rack', $req->id_rack)->get();
+        $subs = SubModel::where('rack_id', $req->id_rack)->get();
         return response()->json($subs);
     }
 
@@ -50,48 +51,53 @@ class BooksController extends Controller
     // Create Books new
     public function Create_Books(Request $req)
     {
-
+        // Validasi input dari form
         $validated = $req->validate([
             'isbn_books' => 'required|regex:/^[0-9]+$/|max:255',
             'judul_books' => 'required|max:255',
-            'autor_books' => 'required|max:255',
-            'year_books' => 'required|digits:4',
-            'publisher_books' => 'required|max:255',
             'number_books' => 'required|regex:/^[0-9]+$/|max:255',
             'code_category' => 'required|max:255',
             'id_rack' => 'required|max:255',
             'name_rack' => 'required|max:255',
+
         ]);
 
+        // Ambil kategori berdasarkan kode kategori
         $category = CategoryModel::all();
         $categories = null;
 
-        foreach ($category as $cat){
-
-        $range = explode('-', $cat->code_category);
-
-            if($validated['code_category'] >= $range[0] && $validated['code_category'] <= $range[1]){
+        foreach ($category as $cat) {
+            $range = explode('-', $cat->code_category);
+            if ($validated['code_category'] >= $range[0] && $validated['code_category'] <= $range[1]) {
                 $categories = $cat;
                 break;
             }
         }
 
+        // Pastikan kategori ditemukan
+        if (!$categories) {
+            return back()->withErrors(['code_category' => 'Kategori tidak ditemukan.']);
+        }
+
+        // Simpan data buku
         $books = new BooksModel([
-            'isbn_books' =>$validated['isbn_books'],
+            'isbn_books' => $validated['isbn_books'],
             'judul_books' => $validated['judul_books'],
-            'autor_books' =>$validated['autor_books'],
-            'year_books' =>$validated['year_books'],
-            'publisher_books' => $validated['publisher_books'],
-            'number_books' =>$validated['number_books'],
+            'number_books' => $validated['number_books'],
             'id_category' => $categories->id,
             'id_rack' => $validated['id_rack'],
-            'name_rack' => $validated['name_rack']
+            'name_rack' => $validated['name_rack'],
+            'autor_books' => 'Unknown Author',
+            'year_books' => '0000',
+            'publisher_books' => 'Unknown Public'
         ]);
 
         $books->save();
 
-        return back()->with('success', 'Books berhasil ditambahkan.');
+        // Redirect kembali dengan pesan sukses
+        return back()->with('success', 'Buku berhasil ditambahkan.');
     }
+
 
 
     public function Update_Books(Request $req, $id)
@@ -130,6 +136,25 @@ class BooksController extends Controller
         $books->id_rack = $req->id_rack ?? $books->id_rack;
         $books->name_rack = $req->name_rack ?? $books->name_rack;
 
+        // Handle file gambar
+        if ($req->hasFile('gambar')) {
+            // Hapus gambar lama jika ada
+            if ($books->gambar && file_exists(public_path('images/books/' . $books->gambar))) {
+                unlink(public_path('images/books/' . $books->gambar));
+            }
+
+            // Simpan gambar baru dengan nama unik
+            $file = $req->file('gambar');
+            $currentDateTime = Carbon::now()->format('HisdmY');
+            $extension = $file->getClientOriginalExtension(); // Mendapatkan ekstensi file
+            $filename = $currentDateTime . '.' . $extension; // Format nama file baru
+            $file->move(public_path('images/books'), $filename);
+
+            // Update nama file gambar pada database
+            $books->gambar = $filename;
+        }
+
+
         $books->save();
 
         return back()->with('success', 'Books berhasil diperbarui.');
@@ -137,11 +162,22 @@ class BooksController extends Controller
 
     public function Delete_Books($id)
     {
+       // Cari buku berdasarkan ID
         $books = BooksModel::find($id);
 
+        if (!$books) {
+            return back()->with('error', 'Buku tidak ditemukan.');
+        }
+
+        // Hapus gambar jika ada
+        if ($books->gambar && file_exists(public_path('images/books/' . $books->gambar))) {
+            unlink(public_path('images/books/' . $books->gambar));
+        }
+
+        // Hapus data buku dari database
         $books->delete();
 
-        return back()->with('success', 'Books berhasil dihapus.');
+        return redirect()->route('books')->with('success', 'Buku berhasil dihapus.');
     }
 
     // Daftar Books
@@ -160,11 +196,12 @@ class BooksController extends Controller
 
     // Filter by category
     if ($request->has('category') && $request->input('category') != '') {
-        $query->where('id_category', $request->input('category')); // Use 'id_category' instead of 'category_id'
+        $query->where('id_category', $request->input('category'));
     }
 
     // Get books after applying the filters
-    $book = $query->get();
+
+    $book = $query->paginate(6);
 
     // Get all categories for the dropdown
     $categories = CategoryModel::all(); // Make sure you have a CategoryModel or equivalent
@@ -177,5 +214,4 @@ class BooksController extends Controller
 
         return view('dashboard.pages.books', compact('book', 'rack_all', 'sub_racks', 'user', 'categories'));
     }
-
 }

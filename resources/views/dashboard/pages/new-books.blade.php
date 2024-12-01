@@ -29,71 +29,61 @@
                             <div class="row gy-3">
                                 <div class="col-12">
                                     <label class="form-label">ISBN</label>
-                                    <input type="text" name="isbn_books" class="form-control" placeholder="Enter ISBN" />
+                                    <input type="text" name="isbn_books" class="form-control"
+                                        placeholder="Masukkan ISBN" />
                                 </div>
                                 <div class="col-12">
-                                    <label class="form-label">Book Title</label>
+                                    <label class="form-label">Judul Buku</label>
                                     <input type="text" name="judul_books" class="form-control"
-                                        placeholder="Enter Book Title" />
+                                        placeholder="Masukkan Judul Buku" />
+                                    @error('isbn_books')
+                                        <div class="text-danger">{{ $message }}</div>
+                                    @enderror
                                 </div>
                                 <div class="col-12">
-                                    <label class="form-label">Author&#39s name</label>
-                                    <input type="text" name="autor_books" class="form-control"
-                                        placeholder="Enter Author&#39s name" />
+                                    <label class="form-label">Jumlah Buku</label>
+                                    <input type="text" name="number_books" class="form-control"
+                                        placeholder="Masukkan Jumlah Buku" />
                                 </div>
-                                <div class="col-12">
-                                    <label class="form-label">Year of Publication</label>
-                                    <input type="text" name="year_books" class="form-control"
-                                        placeholder="Enter Year of Publication" />
-                                </div>
-                                <div class="col-12">
-                                    <label class="form-label">Publisher Name</label>
-                                    <input type="text" name="publisher_books" class="form-control"
-                                        placeholder="Enter Year Publisher Name" />
-                                </div>
-
                             </div>
                         </div>
                         <div class="col-md-6 gay-6">
                             <div class="row gy-3">
+
                                 <div class="col-12">
-                                    <label class="form-label">Number of Books</label>
-                                    <input type="text" name="number_books" class="form-control"
-                                        placeholder="Enter Number of Books" />
-                                </div>
-                                <div class="col-12">
-                                    <label class="form-label">Category Code</label>
+                                    <label class="form-label">Kode Kategori</label>
                                     <input type="text" name="code_category" id="code_category" class="form-control"
-                                        placeholder="Enter Category Code" />
+                                        placeholder="Masukkan Kode Kategori" />
                                 </div>
                                 <div class="col-12">
-                                    <label class="form-label">Category Name</label>
+                                    <label class="form-label">Nama Kategori</label>
                                     <input type="text" name="name_category" id="name_category" class="form-control"
-                                        placeholder="Enter Category Name" readonly />
+                                        placeholder="Masukkan Nama Kategori" readonly />
                                 </div>
                                 <div class="col-12">
-                                    <label class="form-label">Shelf Number</label>
+                                    <label class="form-label">Nomor Rak</label>
                                     <select name="id_rack" id="rak" class="form-select">
-                                        <option selected disabled>&#60&#61&#61&#61&#61 Number &#61&#61&#61&#61&#62</option>
+                                        <option selected disabled>&#60&#61&#61&#61&#61 Nomor &#61&#61&#61&#61&#62</option>
                                         @foreach ($rack_all as $racks)
                                             <option value="{{ $racks->id }}">{{ $racks->name_rack }}</option>
                                         @endforeach
                                     </select>
                                 </div>
                                 <div class="col-12">
-                                    <label class="form-label">Sub Number</label>
+                                    <label class="form-label">Sub Nomor</label>
                                     <select name="name_rack" id="subs" class="form-select">
-                                        <option selected disabled>&#60&#61&#61&#61&#61 Number &#61&#61&#61&#61&#62</option>
+                                        <option selected disabled>&#60&#61&#61&#61&#61 Nomor &#61&#61&#61&#61&#62</option>
                                     </select>
                                 </div>
                             </div>
                         </div>
                         <div class="col-12 gay-6 mt-3">
                             <button type="submit" id="uploadButton" class="btn btn-primary-600">
-                                Upload
+                                Unggah
                             </button>
                         </div>
                     </form>
+
                 </div>
             </div>
         </div>

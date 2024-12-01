@@ -70,6 +70,9 @@ Route::middleware(['auth'])->group(function () {
     Route::put('update/rak/{id}', [RackController::class, 'Update_Bookshelf'])->name('update.rak');
     Route::delete('delete/rak/{id}', [RackController::class, 'Delete_Bookshelf'])->name('delete.rak');
 
+    // Sub Rak
+    Route::get('sub', [RackController::class, 'Index_Sub'])->name('sub');
+
     // Show
     Route::get('sub/{id}', [ShowController::class, 'Show_SubRack'])->name('subs.show');
     Route::get('rack/{id}', [ShowController::class, 'Show_rack'])->name('rack.show');
@@ -91,6 +94,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('borrow/submit', [BorrowController::class, 'Create_Borrow'])->name('borrow.submit');
     Route::get('borrowing-table', [BorrowController::class, 'Table_Borrow'])->name('borrowing.table');
     Route::post('/borrow/return-single/{borrow_id}/{book_id}', [BorrowController::class, 'Return_Borrow'])->name('borrow.return_single');
+    Route::get('histori', [BorrowController::class, 'Index_Hisrori'])->name('histori');
 
     // // Profile
     Route::get('view-profile', [UserController::class, 'Index_View'])->name('view-profile');

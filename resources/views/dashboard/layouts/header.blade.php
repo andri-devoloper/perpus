@@ -430,6 +430,7 @@
                     <button class="d-flex justify-content-center align-items-center rounded-circle" type="button"
                         data-bs-toggle="dropdown">
                         <img src="{{ asset('images/upload/' . $user->photo) ? asset('images/upload/' . $user->photo) : asset('assets/images/users/person.png') }}"
+                            onerror="this.onerror=null;this.src='{{ asset('assets/images/users/person.png') }}';"
                             alt="{{ $user->id }}" class="w-40-px h-40-px object-fit-cover rounded-circle" />
                     </button>
                     <div class="dropdown-menu to-top dropdown-menu-sm">

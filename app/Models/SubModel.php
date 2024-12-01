@@ -17,14 +17,14 @@ class SubModel extends Model
 
     protected $fillable = [
         'code_sub',
-        'id_rack'
+        'rack_id'
     ];
 
     public $timestamps = true;
 
     public function rack()
     {
-        return $this->belongsTo(RackModel::class, 'id_rack');
+        return $this->belongsTo(RackModel::class, 'rack_id');
     }
 
 

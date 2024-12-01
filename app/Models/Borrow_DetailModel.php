@@ -19,12 +19,23 @@ class Borrow_DetailModel extends Model
         'book_id',
         'counter',
         'status',
-        'book_identity'
+        'book_identity',
+        'borrowed_by',
+        'returned_by'
     ];
 
     public $timestamps = true;
-    
+
     // protected $guarded = [];
+    public function borrowedBy()
+    {
+        return $this->belongsTo(User::class, 'borrowed_by');
+    }
+
+    public function returnedBy()
+    {
+        return $this->belongsTo(User::class, 'returned_by');
+    }
 
     public function rack()
     {

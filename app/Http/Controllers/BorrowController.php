@@ -88,7 +88,7 @@ class BorrowController extends Controller
                 'borrowed_by' => auth()->user()->id,
             ]);
 
-            dd($borrowRecord);
+            // dd($borrowRecord);
 
             foreach ($borrow['id_books'] as $index => $bookId) {
                 // Ambil jumlah buku yang dipinjam
@@ -112,7 +112,8 @@ class BorrowController extends Controller
                     'book_id' => $bookId,
                     'counter' => $quantityBorrowed,
                     'status' => 'Dipinjam',
-                    'book_identity' => $borrow['book_identity']
+                    'book_identity' => $borrow['book_identity'],
+                    'borrowed_by' => auth()->user()->id,
                 ]);
             }
 
@@ -127,41 +128,50 @@ class BorrowController extends Controller
     public function Return_Borrow($borrow_id, $book_id)
     {
         // Ambil detail peminjaman buku berdasarkan borrow_id dan book_id
-        $borrowDetail = Borrow_DetailModel::where('borrow_id', $borrow_id)->where('book_id', $book_id)->first();
+        $borrowDetail = Borrow_DetailModel::where('borrow_id', $borrow_id)
+            ->where('book_id', $book_id)
+            ->first();
+
+        // Jika detail peminjaman tidak ditemukan
+        if (!$borrowDetail) {
+            return redirect()->back()->withErrors('Detail peminjaman tidak ditemukan.');
+        }
 
         DB::beginTransaction();
 
         try {
+            // Perbarui status peminjaman menjadi 'Dikembalikan'
             $borrowDetail->status = 'Dikembalikan';
+            $borrowDetail->returned_by = auth()->user()->id;
             $borrowDetail->save();
 
-            // Ambil informasi buku
+            // Debugging: Log status untuk memastikan berhasil diperbarui
+            Log::info('Status peminjaman diperbarui: ' . $borrowDetail->status);
+
+            // Ambil informasi buku berdasarkan book_id
             $book = BooksModel::find($book_id);
-            // Tambahkan jumlah buku sesuai counter
+
+            // Jika buku tidak ditemukan
+            if (!$book) {
+                return redirect()->back()->withErrors('Buku tidak ditemukan.');
+            }
+
+            // Tambahkan kembali jumlah buku yang dipinjam ke stok
             $book->number_books += $borrowDetail->counter;
             $book->save();
 
-            $borrowRecord = BorrowModel::find($borrow_id);
-
-            HistoryModel::create([
-                'judul_books' => $book->judul_books,
-                'isbn_books' => $book->isbn_books,
-                'category' => $book->category ? $book->category->name_category : 'Kategori Tidak Ditemukan',
-                'status' => 'Dikembalikan',
-                'name_borrow' => $borrowRecord->name_borrow,
-                'class_position' => $borrowRecord->position_borrow,
-                'phone_borrow' => $borrowRecord->phone_borrow
-            ]);
+            // Debugging: Log jumlah stok buku setelah pengembalian
+            Log::info('Stok buku setelah pengembalian: ' . $book->number_books);
 
             DB::commit();
-
-            return redirect()->back()->with('success', 'Buku berhasil dikembalikan dan data sudah dipindahkan ke history.');
+            return redirect()->back()->with('success', 'Buku berhasil dikembalikan.');
         } catch (\Exception $e) {
             DB::rollback(); // Rollback transaksi jika terjadi error
-            Log::error('Error saat mengembalikan buku: ' . $e->getMessage()); // Tambahkan log untuk error
-            return redirect()->back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
+            Log::error('Error saat mengembalikan buku: ' . $e->getMessage()); // Log error
+            return redirect()->back()->withErrors('Terjadi kesalahan: ' . $e->getMessage());
         }
     }
+
 
 
         public function search(Request $request)
@@ -183,9 +193,22 @@ class BorrowController extends Controller
         $user = Auth::user();
 
         $list_detail = Borrow_DetailModel::with(['rack', 'category', 'borrow', 'books'])
+        ->where('status', '<>', 'Dikembalikan')
         ->orderBy('created_at', 'desc')
         ->get();;
 
         return view('dashboard.pages.borrowing-table', compact('list_detail', 'user'));
+    }
+    public function Index_Hisrori()
+    {
+        $category = CategoryModel::all();
+        $user = Auth::user();
+
+        $list_detail = Borrow_DetailModel::with(['rack', 'category', 'borrow', 'books'])
+        ->where('status', '<>', 'Dipinjam')
+        ->orderBy('created_at', 'desc')
+        ->get();;
+
+        return view('dashboard.pages.histori', compact('list_detail', 'user'));
     }
 }

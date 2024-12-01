@@ -24,7 +24,7 @@ class RackModel extends Model
 
     public function subs()
     {
-        return $this->hasMany(SubModel::class, 'id_rack');
+        return $this->hasMany(SubModel::class, 'rack_id');
     }
 
     protected static function boot()

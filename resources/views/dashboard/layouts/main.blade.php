@@ -5,10 +5,10 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=Ddevice-width, initial-scale=1.0" />
-    <title>Wowdash - Bootstrap 5 Admin DashboFrd HTML Template</title>
+    <title>Perpsutakaan digital</title>
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <link rel="icon" type="image/png" href="{{ asset('assets/images/favicon.png') }}" sizes="16x16" />
+    <link rel="icon" type="image/png" href="{{ asset('assets/images/favicon.ico') }}" sizes="16x16" />
     <!-- Remix Icon font css -->
     <link rel="stylesheet" href="{{ asset('assets/css/remixicon.css') }}" />
     <!-- Bootstrap css -->
@@ -111,6 +111,14 @@
             border-radius: 0 10px 0 0;
             color: white
         }
+
+        .card-img-top {
+            height: 300px;
+            width: 100%;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
     </style>
 </head>
 
@@ -179,9 +187,9 @@
                 var text = textElement.innerHTML;
 
                 var words = text.split(" "); // Pisahkan teks berdasarkan spasi
-                if (words.length > 2) {
+                if (words.length > 3) {
                     // Gabungkan dua kata pertama dan tambahkan '...'
-                    textElement.innerHTML = words.slice(0, 2).join(" ") + "...";
+                    textElement.innerHTML = words.slice(0, 3).join(" ") + "...";
                 }
             });
         }
@@ -490,7 +498,8 @@
                         success: function(data) {
                             console.log(data); // Debugging response dari server
                             $('#subs').empty();
-                            $('#subs').append('<option value="">Select Sub</option>');
+                            $('#subs').empty().append(
+                                '<option value="" selected>Pilih Sub Rak</option>');
                             $.each(data, function(key, value) {
                                 $('#subs').append('<option value="' + value.code_sub +
                                     '">' +
@@ -498,13 +507,13 @@
                             });
                         },
                         error: function(xhr) {
-                            // Menangani error
+                            $('#subs').html('<option>Gagal memuat Sub Rak</option>');
                             console.error(xhr.responseText);
                         }
                     });
                 } else {
                     $('#subs').empty();
-                    $('#subs').append('<option value="">Select Sub</option>');
+                    $('#subs').empty().append('<option>Pilih Sub Rak</option>');
                 }
             });
             var bookItems = $('.book-item');
@@ -537,26 +546,7 @@
         });
     </script>
 
-    {{--  <script>
-        $(document).ready(function() {
-            let count = 1; // Nilai awal counter
-            $('#counter').text(count); // Set nilai awal di tampilan
 
-            // Fungsi untuk menambah nilai
-            $('#btn-plus').click(function() {
-                count++;
-                $('#counter').text(count);
-            });
-
-            // Fungsi untuk mengurangi nilai
-            $('#btn-minus').click(function() {
-                if (count > 1) { // Cegah agar nilai tidak kurang dari 1
-                    count--;
-                    $('#counter').text(count);
-                }
-            });
-        });
-    </script>  --}}
 
 
 </body>

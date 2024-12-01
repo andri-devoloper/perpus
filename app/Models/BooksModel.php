@@ -24,6 +24,7 @@ class BooksModel extends Model
         'id_category',
         'id_rack',
         'name_rack',
+        'gambar'
     ];
 
     public $timestamps = true;

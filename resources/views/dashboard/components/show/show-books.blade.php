@@ -2,7 +2,7 @@
 
 @section('contents')
     <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-24">
-        <h6 class="fw-semibold mb-0">Book</h6>
+        <h6 class="fw-semibold mb-0">Buku</h6>
         <ul class="d-flex align-items-center gap-2">
             <li class="fw-medium">
                 <a href="index.html" class="d-flex align-items-center gap-1 hover-text-primary">
@@ -11,14 +11,14 @@
                 </a>
             </li>
             <li>-</li>
-            <li class="fw-medium">Book</li>
+            <li class="fw-medium">Buku</li>
         </ul>
     </div>
 
     <div class="card">
         <div class="card-header">
             <div class="d-flex flex-wrap align-items-center justify-content-start">
-                <h5 class="card-title mb-0">Input Custom Styles</h5>
+                <h5 class="card-title mb-0">Buku</h5>
             </div>
             <div class="d-flex flex-wrap align-items-center justify-content-end gap-2">
                 <a href="{{ url()->previous() }}"
@@ -36,16 +36,27 @@
                     <iconify-icon icon="uil:times-circle" class="text-xl"></iconify-icon>
                     Cancel
                 </a>
+                <form action="{{ route('delete.books', $books->id) }}" method="POST"
+                    onsubmit="return confirm('Apakah Anda yakin ingin menghapus buku ini?');">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit"
+                        class="btn btn-sm btn-danger radius-8 d-inline-flex align-items-center gap-1"><iconify-icon
+                            icon="weui:delete-on-filled" class="text-xl"></iconify-icon> Delete</button>
+                </form>
             </div>
         </div>
         <div class="col-lg-12">
-            <div class="card">
+            <div id="rackDetails" class="card container">
                 <div class="card-body">
                     <h5 class="text-center text-2xl mb-4">{{ $books->judul_books ? $books->judul_books : 'N/A' }}</h5>
                     <div class="row" style="margin-top: 20px">
-                        <div class="col-md-6 d-flex justify-content-end ">
-                            <img src="https://static.buku.kemdikbud.go.id/content/image/coverteks/coverkurikulum21/Informatika-BS-KLS-X-Cover.png"
-                                class="img-fluid rounded" width="250" alt="">
+                        <div class="col-md-6 d-flex justify-content-end " style="max-width: 300px;">
+                            <img src="{{ asset('images/books/' . $books->gambar) ? asset('images/books/' . $books->gambar) : asset('assets/images/sampul.png') }}"
+                                onerror="this.onerror=null;this.src='{{ asset('assets/images/sampul.png') }}';"
+                                class="img-fluid w-100 rounded"
+                                style="width: 100%; max-width: 250px; height: auto; object-fit: cover;" alt="Sampul Buku">
+
                         </div>
                         <div class="col-md-6  w-full d-flex justify-content-start">
                             <div class="col-md-12">
@@ -135,7 +146,7 @@
                                                 </div>
                                                 <ul class="ms-10" style="list-style-type: circle;">
                                                     <li class="text-white">
-                                                        {{ $books->rack->name_rack ? $books->rack->name_rack : 'N/A' }}</li>
+                                                        {{ $books->rack->name_rack ?? 'N/A' }}</li>
                                                 </ul>
                                             </div>
                                             <div class="mb-4">
@@ -156,6 +167,100 @@
                     </div>
                 </div>
             </div>
+            <div class="card p-5" id="editForm" style="display: none;">
+                <form class="row" action="{{ route('update.books', $books->id) }}" method="POST"
+                    enctype="multipart/form-data">
+                    @csrf
+                    @method('PUT')
+                    <div class="col-md-6 gay-6">
+                        <div class="row gy-3">
+                            <div class="col-12">
+                                <label class="form-label">Gambar Buku </label>
+                                <input class="form-control form-control-sm" name="gambar" type="file">
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label">ISBN</label>
+                                <input type="text" name="isbn_books" class="form-control"
+                                    value="{{ $books->isbn_books }}" placeholder="Masukkan ISBN" />
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label">Judul Buku</label>
+                                <input type="text" name="judul_books" class="form-control"
+                                    value="{{ $books->judul_books }}" placeholder="Masukkan Judul Buku" />
+                                @error('judul_books')
+                                    <div class="text-danger">{{ $message }}</div>
+                                @enderror
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label">Jumlah Buku</label>
+                                <input type="text" name="number_books" class="form-control"
+                                    value="{{ $books->number_books }}" placeholder="Masukkan Jumlah Buku" />
+                            </div>
+
+                            <div class="col-12">
+                                <label class="form-label">Nama Penulis</label>
+                                <input type="text" name="autor_books" class="form-control"
+                                    placeholder="Masukkan Nama Penulis" value="{{ $books->autor_books }}" />
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="col-md-6 gay-6">
+                        <div class="row gy-3">
+                            <div class="col-12">
+                                <label class="form-label">Tahun Terbit</label>
+                                <input type="text" name="year_books" class="form-control"
+                                    placeholder="Masukkan Tahun Terbit" value="{{ $books->year_books }}" />
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label">Nama Penerbit</label>
+                                <input type="text" name="publisher_books" class="form-control"
+                                    placeholder="Masukkan Nama Penerbit" value="{{ $books->publisher_books }}" />
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label">Nama Kategori</label>
+                                <select name="id_rack" id="rak" class="form-select">
+                                    <option disabled>Pilih Rak</option>
+                                    @foreach ($category as $categor)
+                                        <option value="{{ $categor->id }}"
+                                            {{ $categor->id == $books->id_category ? 'selected' : '' }}>
+                                            {{ $categor->name_category }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label">Nomor Rak</label>
+                                <select name="id_rack" id="rak" class="form-select">
+                                    <option disabled>Pilih Rak</option>
+                                    @foreach ($rack_all as $racks)
+                                        <option value="{{ $racks->id }}"
+                                            {{ $racks->id == $books->id_rack ? 'selected' : '' }}>
+                                            {{ $racks->name_rack }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label">Sub Nomor</label>
+                                <select name="name_rack" id="subs" class="form-select">
+                                    @foreach ($subs_all as $subs)
+                                        <option value="{{ $subs->id }}"
+                                            {{ $subs->id == $books->sub_rack ? 'selected' : '' }}>
+                                            {{ $subs->code_sub }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 gay-6 mt-3">
+                        <button type="submit" class="btn btn-success">Perbarui</button>
+                        <button type="button" onclick="hideEditForm()" class="btn btn-secondary">Batal</button>
+                    </div>
+                </form>
+            </div>
+
         </div>
     </div>
 @endsection

@@ -31,10 +31,13 @@ class ShowController extends Controller
 
     public function Show_Books($id) {
         $user =  Auth::user();
+        $books = BooksModel::with('rack')->findOrFail($id);
+        $rack_all = RackModel::all();
+        $subs_all = SubModel::where('rack_id', $books->id_rack)->get();
+        $category = CategoryModel::all();
 
-        $books = BooksModel::findOrFail($id);
 
-        return view('dashboard.components.show.show-books', compact('user', 'books'));
+        return view('dashboard.components.show.show-books', compact('user', 'books', 'rack_all', 'subs_all', 'category'));
     }
 
     public function Show_Category($id){

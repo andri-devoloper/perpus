@@ -19,6 +19,8 @@ class RackController extends Controller
     }
 
 
+
+
     public function Create_Bookshelf(Request $req)
     {
         $validated = $req->validate([
@@ -69,6 +71,16 @@ class RackController extends Controller
     }
 
     // Sub
+
+    public function Index_Sub()
+    {
+        $user = Auth::user();
+        $rack = RackModel::all();
+        $sub = SubModel::all();
+
+        return view('dashboard.pages.sub-rack', compact('rack', 'sub', 'user'));
+    }
+
     public function Create_Sub(Request $req)
 
     {
