@@ -89,7 +89,8 @@ class BooksController extends Controller
             'name_rack' => $validated['name_rack'],
             'autor_books' => 'Unknown Author',
             'year_books' => '0000',
-            'publisher_books' => 'Unknown Public'
+            'publisher_books' => 'Unknown Public',
+            'gambar' => ''
         ]);
 
         $books->save();
