@@ -22,7 +22,12 @@ class BorrowModel extends Model
         'phone_borrow',
     ];
 
-    public $timestamps = true; 
+    public $timestamps = true;
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
 
     protected static function boot()
     {

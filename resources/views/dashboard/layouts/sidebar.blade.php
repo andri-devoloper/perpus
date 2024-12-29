@@ -70,7 +70,19 @@
                     <span>Histori Buku</span>
                 </a>
             </li>
-            <li class="dropdown">
+            <li>
+                <a href="{{ route('data.pengunjung') }}">
+                    <iconify-icon icon="solar:calendar-outline" class="menu-icon"></iconify-icon>
+                    <span>Data Pengunjung</span>
+                </a>
+            </li>
+            <li>
+                <a href="{{ route('export') }}">
+                    <iconify-icon icon="solar:calendar-outline" class="menu-icon"></iconify-icon>
+                    <span>Export</span>
+                </a>
+            </li>
+            <!-- <li class="dropdown">
                 <a href="javascript:void(0)">
                     <iconify-icon icon="hugeicons:invoice-03" class="menu-icon"></iconify-icon>
                     <span>Invoice</span>
@@ -94,6 +106,7 @@
                     </li>
                 </ul>
             </li>
+        -->
 
             <li class="sidebar-menu-group-title">Application</li>
 

@@ -1,13 +1,21 @@
 <?php
 
+use App\Exports\BooksExport;
+use App\Exports\PengunjungExport;
 use App\Http\Controllers\BooksController;
 use App\Http\Controllers\BorrowController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\ChatbotController;
+use App\Http\Controllers\ExportController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\ImportController;
+use App\Http\Controllers\PengunjungController;
 use App\Http\Controllers\RackController;
 use App\Http\Controllers\ShowController;
 use App\Http\Controllers\UserController;
+use GuzzleHttp\Psr7\Request;
 use Illuminate\Support\Facades\Route;
+use Maatwebsite\Excel\Facades\Excel;
 
 /*
 |--------------------------------------------------------------------------
@@ -20,21 +28,45 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+// Route::get('/', function () {
+//     return view('welcome');
+// })->name('home');
 
+Route::get('/', [HomeController::class, 'Index_Welcome'])->name('home');
+
+Route::get('/book-home', [HomeController::class, 'Books_view'])->name('books.home');
+Route::get('/pengujung', [HomeController::class, 'Treker_Index'])->name('treker');
 
 // Dashboard
 // Route::get('dashboard', [HomeController::class, 'Index_Dashboard'])->name('dashboard');
 
 
 
-
-// // Loggin
+// Loggin
 Route::get('login', [HomeController::class, 'Index_Login'])->name('login');
 Route::post('create-login', [UserController::class, 'Create_Login'])->name('login.submit');
 Route::post('/logout', [UserController::class, 'Logout_User'])->name('logout')->middleware('auth');
+
+// Data
+Route::get('pengunjung', [PengunjungController::class, 'Index_Pengunjung'])->name('pengunjung');
+Route::get('daftar-buku', [PengunjungController::class, 'Index_DaftarBuku'])->name('daftar.buku');
+Route::get('daftar-user', [PengunjungController::class, 'Index_DaftarUser'])->name('daftar.user');
+
+// Create
+Route::post('pengunjung/create', [PengunjungController::class, 'Create_Pengunjung'])->name('create.pengunjung');
+
+// Showw Detail Buku
+Route::get('detail/{id}', [ShowController::class, 'Show_DetailBooks'])->name('show.buku');
+
+
+Route::get('/chat', [ChatbotController::class, 'index'])->name('chat.index');
+Route::post('/chat/send', [ChatbotController::class, 'send'])->name('chat.send');
+
+
+// Maks Pengujung
+Route::get('back', [PengunjungController::class, 'Index_Pe'])->name('maks.pengujung');
+Route::put('back/{id}', [PengunjungController::class, 'MarkAsKembali'])->name('maks.back');
+
 
 
 // Route::get('dashboard', [HomeController::class, 'Index_Dashboard'])
@@ -45,6 +77,10 @@ Route::post('/logout', [UserController::class, 'Logout_User'])->name('logout')->
 Route::middleware(['auth'])->group(function () {
     // Dashboard
     Route::get('dashboard', [HomeController::class, 'Index_Dashboard'])->name('dashboard');
+    Route::get('/dashboard/books-data', [HomeController::class, 'getBooksPerMonth']);
+    Route::get('/dashboard/chart-data', [HomeController::class, 'getPieChartData']);
+    Route::get('/stacked-bar-chart-data', [HomeController::class, 'getStackedBarChartData']);
+
 // New Buku
     Route::get('new', [BooksController::class, 'Index_NewBook'])->name('new');
     Route::get('/get-category/{code_category}', [BooksController::class , 'Get_Category']);
@@ -79,6 +115,8 @@ Route::middleware(['auth'])->group(function () {
     // Route::get('book/{id}', [ShowController::class, 'Show_Books'])->name('books.show');
     Route::get('category/{id}', [ShowController::class, 'Show_Category'])->name('category.show');
     Route::get('book/{id}', [ShowController::class, 'Show_Books'])->name('books.show');
+    Route::get('back/show/{id}', [ShowController::class, 'Show_Back'])->name('back.show');
+    Route::get('histori/show/{id}', [ShowController::class, 'Show_History'])->name('histori.show');
 
     //
 
@@ -108,6 +146,34 @@ Route::middleware(['auth'])->group(function () {
 
     // User List
     Route::get('user-list', [UserController::class, 'Index_UserList'])->name('user.list');
+
+    // Pengunjung
+    Route::get('data-pengujung', [PengunjungController::class, 'Index_DataPenjunng'])->name('data.pengunjung');
+    Route::post('/delete-pengunjung', [PengunjungController::class, 'deletePengunjung'])->name('delete.pengunjung');
+    Route::get('/pengunjung/filter', [PengunjungController::class, 'filter'])->name('pengunjung.filter');
+
+
+    // Inport Book
+    Route::post('buku-import', [ImportController::class, 'Import_Books'])->name('import.book.data');
+    // Template
+    Route::get('download-template', [ImportController::class, 'downloadTemplate'])->name('books.downloadTemplate');
+
+
+    // Export
+    // Route::get('/export-books', function (Request $request) {
+    //     $month = $request->input('month');
+    //     $year = $request->input('year');
+    //     return Excel::download(new BooksExport($month, $year), "books_{$month}_{$year}.xlsx");
+    // });
+
+    Route::get('/export-books', [ExportController::class, 'exportBooks'])->name('export.books');
+
+    Route::get('export', [ExportController::class , 'Index_export'])->name('export');
+    Route::get('/export-pengunjung', function () {
+        return Excel::download(new PengunjungExport, 'pengunjung.xlsx');
+    });
+
+
 });
 
 // Category Management (akses hanya untuk "super admin")

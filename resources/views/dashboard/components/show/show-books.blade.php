@@ -51,16 +51,16 @@
                 <div class="card-body">
                     <h5 class="text-center text-2xl mb-4">{{ $books->judul_books ? $books->judul_books : 'N/A' }}</h5>
                     <div class="row" style="margin-top: 20px">
-                        <div class="col-md-6 d-flex justify-content-end " style="max-width: 300px;">
+                        <div class="col-md-6 d-flex justify-content-end  d-none d-md-block" style="max-width: 300px;">
                             <img src="{{ asset('images/books/' . $books->gambar) ? asset('images/books/' . $books->gambar) : asset('assets/images/sampul.png') }}"
                                 onerror="this.onerror=null;this.src='{{ asset('assets/images/sampul.png') }}';"
                                 class="img-fluid w-100 rounded"
-                                style="width: 100%; max-width: 250px; height: auto; object-fit: cover;" alt="Sampul Buku">
+                                style="width: 100%; max-width: 250px; height:400px; object-fit: cover;" alt="Sampul Buku">
 
                         </div>
                         <div class="col-md-6  w-full d-flex justify-content-start">
                             <div class="col-md-12">
-                                <div class="row ">
+                                <div class="row">
                                     <div class="col-md-6">
                                         <div class="col">
                                             <div class="mb-4">
@@ -69,7 +69,7 @@
                                                         style="width: 200px">ISBN</span>
                                                 </div>
                                                 <ul class="ms-10" style="list-style-type: circle;">
-                                                    <li class="text-white">
+                                                    <li>
                                                         {{ $books->isbn_books ? $books->isbn_books : 'N/A' }}</li>
                                                 </ul>
                                             </div>
@@ -79,7 +79,7 @@
                                                         style="width: 200px">Penyusun</span>
                                                 </div>
                                                 <ul class="ms-10" style="list-style-type: circle;">
-                                                    <li class="text-white">
+                                                    <li>
                                                         {{ $books->autor_books ? $books->autor_books : 'N/A' }}</li>
                                                 </ul>
                                             </div>
@@ -89,7 +89,7 @@
                                                         style="width: 200px">Penerbit</span>
                                                 </div>
                                                 <ul class="ms-10" style="list-style-type: circle;">
-                                                    <li class="text-white">
+                                                    <li>
                                                         {{ $books->publisher_books ? $books->publisher_books : 'N/A' }}</li>
                                                 </ul>
                                             </div>
@@ -99,7 +99,7 @@
                                                         style="width: 200px">Tahun</span>
                                                 </div>
                                                 <ul class="ms-10" style="list-style-type: circle;">
-                                                    <li class="text-white">
+                                                    <li>
                                                         {{ $books->year_books ? $books->year_books : 'N/A' }}</li>
                                                 </ul>
                                             </div>
@@ -110,7 +110,7 @@
                                                         Halaman</span>
                                                 </div>
                                                 <ul class="ms-10" style="list-style-type: circle;">
-                                                    <li class="text-white">Buku Matematik</li>
+                                                    <li>Buku Matematik</li>
                                                 </ul>
                                             </div>
                                             <div class="mb-4">
@@ -120,7 +120,7 @@
                                                         Buku</span>
                                                 </div>
                                                 <ul class="ms-10" style="list-style-type: circle;">
-                                                    <li class="text-white">
+                                                    <li>
                                                         {{ $books->number_books ? $books->number_books : 'N/A' }}</li>
                                                 </ul>
                                             </div>
@@ -134,7 +134,7 @@
                                                         style="width: 200px">Kategori</span>
                                                 </div>
                                                 <ul class="ms-10" style="list-style-type: circle;">
-                                                    <li class="text-white">
+                                                    <li>
                                                         {{ $books->category->name_category ? $books->category->name_category : 'N/A' }}
                                                     </li>
                                                 </ul>
@@ -145,7 +145,7 @@
                                                         style="width: 200px">Rak Buku</span>
                                                 </div>
                                                 <ul class="ms-10" style="list-style-type: circle;">
-                                                    <li class="text-white">
+                                                    <li>
                                                         {{ $books->rack->name_rack ?? 'N/A' }}</li>
                                                 </ul>
                                             </div>
@@ -155,13 +155,17 @@
                                                         style="width: 200px">Sub Buku</span>
                                                 </div>
                                                 <ul class="ms-10" style="list-style-type: circle;">
-                                                    <li class="text-white">
+                                                    <li>
                                                         {{ $books->name_rack ? $books->name_rack : 'N/A' }}</li>
                                                 </ul>
                                             </div>
+
                                         </div>
                                     </div>
+
+                                    <p>{{ $books->description }}</p>
                                 </div>
+
                             </div>
                         </div>
                     </div>
@@ -253,6 +257,10 @@
                                 </select>
                             </div>
                         </div>
+                    </div>
+                    <div class="col-md-12 gay-6">
+                        <label class="form-label">Diskripsion</label>
+                        <textarea class="form-control" name="description" id="" cols="4" rows="3"></textarea>
                     </div>
                     <div class="col-12 gay-6 mt-3">
                         <button type="submit" class="btn btn-success">Perbarui</button>

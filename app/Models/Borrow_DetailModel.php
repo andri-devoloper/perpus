@@ -52,10 +52,23 @@ class Borrow_DetailModel extends Model
         return $this->belongsTo(BorrowModel::class, 'borrow_id');
     }
 
+    public function borrowedByUser()
+    {
+        return $this->belongsTo(User::class, 'borrowed_by');
+    }
+    public function returnedByUser()
+    {
+        return $this->belongsTo(User::class, 'returned_by');
+    }
 
     public function books()
     {
-        return $this->belongsTo(BooksModel::class, 'book_id', 'id');
+        return $this->belongsTo(BooksModel::class, 'book_id');
+    }
+
+    public function book()
+    {
+        return $this->belongsTo(BooksModel::class, 'book_id');
     }
 
     protected static function boot()

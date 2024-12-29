@@ -5,7 +5,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=Ddevice-width, initial-scale=1.0" />
-    <title>Perpsutakaan digital</title>
+    <title>Perpsutakaan Digital</title>
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <link rel="icon" type="image/png" href="{{ asset('assets/images/favicon.ico') }}" sizes="16x16" />
@@ -40,6 +40,7 @@
 
     <!-- JavaScript -->
     <script src="{{ asset('assets/js/custom.js') }}"></script>
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
 
 
     <style>
@@ -119,6 +120,18 @@
             background-position: center;
             background-repeat: no-repeat;
         }
+
+        .dt-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .dt-button {
+            border: 1px solid rgb(0, 47, 255);
+            border-radius: 5px;
+            padding: 0 15px;
+        }
     </style>
 </head>
 
@@ -178,6 +191,119 @@
 
     <script src="{{ asset('assets/js/homeOneChart.js') }}"></script>
     <script src="{{ asset('assets/js/cutomDataTable.js') }}"></script>
+    <script src="{{ asset('assets/js/pieChartPageChart.js') }}"></script>
+    <script src="{{ asset('assets/js/columnChartPageChart.js') }}"></script>
+
+
+    <!-- Tata table -->
+    <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+    <script src="https://cdn.datatables.net/2.1.8/js/dataTables.js"></script>
+    <script src="https://cdn.datatables.net/buttons/3.2.0/js/dataTables.buttons.js"></script>
+    <script src="https://cdn.datatables.net/buttons/3.2.0/js/buttons.dataTables.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
+    <script src="https://cdn.datatables.net/buttons/3.2.0/js/buttons.html5.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/3.2.0/js/buttons.print.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/3.2.0/css/buttons.dataTables.css"></script>
+
+    <script>
+        $(document).ready(function() {
+            // Inisialisasi DataTables
+            var table = $('#export-pengunjung').DataTable({
+                dom: 'Bfrtip',
+                buttons: ['copy', 'csv', 'excel', 'pdf', 'print'],
+                searching: false // Nonaktifkan pencarian bawaan
+            });
+
+            // Event saat dropdown berubah
+            $('#yearFilter').on('change', function() {
+                var selectedYear = $(this).val(); // Ambil nilai tahun dari dropdown
+
+                if (selectedYear) {
+                    // Filter berdasarkan kolom kedua (indeks 1)
+                    table.column(1).search('^' + selectedYear + '$', true, false).draw();
+                } else {
+                    // Reset filter jika "All" dipilih
+                    table.column(1).search('').draw();
+                }
+            });
+        });
+    </script>
+
+
+
+
+    <script>
+        // Memantau perubahan checkbox
+        const checkboxes = document.querySelectorAll('.select-row');
+        const deleteButton = document.getElementById('deleteButton');
+        const selectAllCheckbox = document.getElementById('selectAll');
+
+        // Fungsi untuk mengupdate tombol Delete
+        function updateDeleteButton() {
+            // Memeriksa apakah ada checkbox yang dicentang
+            const checkedCheckboxes = document.querySelectorAll('.select-row:checked');
+            if (checkedCheckboxes.length > 0) {
+                deleteButton.classList.remove('d-none'); // Menampilkan tombol Delete
+            } else {
+                deleteButton.classList.add('d-none'); // Menyembunyikan tombol Delete
+            }
+        }
+
+        // Menambahkan event listener untuk setiap checkbox
+        checkboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', updateDeleteButton);
+        });
+
+        // Fungsi untuk menangani select all checkbox
+        selectAllCheckbox.addEventListener('change', function() {
+            // Jika checkbox selectAll dicentang, semua checkbox individual akan dicentang
+            const isChecked = selectAllCheckbox.checked;
+            checkboxes.forEach(checkbox => checkbox.checked = isChecked);
+            updateDeleteButton(); // Update tombol delete setelah select all
+        });
+
+        // Fungsi untuk menghapus data (tombol Delete)
+        deleteButton.addEventListener('click', function() {
+            // Ambil data checkbox yang dicentang
+            const selectedRows = document.querySelectorAll('.select-row:checked');
+            const selectedIds = Array.from(selectedRows).map(row => row.id.replace('checkbox-',
+                '')); // Mengambil ID tanpa prefix
+
+            if (selectedIds.length === 0) {
+                alert("Tidak ada data yang dipilih!");
+                return;
+            }
+
+            // Kirim data ke server menggunakan AJAX
+            fetch('{{ route('delete.pengunjung') }}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}', // Pastikan CSRF token ada
+                    },
+                    body: JSON.stringify({
+                        ids: selectedIds
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Menghapus baris yang terpilih dari tabel
+                        selectedRows.forEach(row => row.closest('tr').remove());
+                        updateDeleteButton(); // Update tombol delete setelah penghapusan
+                        alert(data.message);
+                    } else {
+                        alert('Gagal menghapus data');
+                    }
+                })
+                .catch(error => {
+                    alert('Terjadi kesalahan. Coba lagi nanti.');
+                    console.error('Error:', error);
+                });
+        });
+    </script>
 
     <script>
         window.onload = function() {
@@ -378,7 +504,6 @@
             });
         });
 
-
         $(document).ready(function() {
             $('#search').on('keyup', function() {
                 let query = $(this).val();
@@ -436,6 +561,15 @@
                     $('.books-container').parent().append(newBookInfo);
                 } else {
                     console.log('Data incomplete, cannot add book');
+                }
+            });
+
+
+            $(document).on('click', '.btn-remove', function() {
+                if ($('.books-container').parent().find('.row').length > 1) {
+                    $(this).closest('.row').remove(); // Hapus elemen buku yang dipilih
+                } else {
+                    alert('Setidaknya harus ada satu buku dipinjam.');
                 }
             });
 

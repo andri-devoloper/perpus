@@ -26,10 +26,10 @@
                         <tr class="cutom-tr-table">
                             <th scope="col">ISBN</th>
                             <th scope="col">Book Title</th>
+                            <th scope="col">Name</th>
                             <th scope="col">Status</th>
-                            <th scope="col">Borrow Name</th>
-                            <th scope="col">Book Quantity</th>
-                            <th scope="col">Rack</th>
+                            <th scope="col">Rak & Sub</th>
+                            <th scope="col">Jumlah buku</th>
 
                         </tr>
                     </thead>
@@ -40,27 +40,24 @@
                                     {{ $item->books->isbn_books }}
                                 </td>
                                 <td>
-                                    <div class="d-flex align-items-center">
-                                        <img src="assets/images/user-list/user-list1.png" alt=""
-                                            class="flex-shrink-0 me-12 radius-8" />
-                                        <h6 class="text-sm mb-0 fw-medium flex-grow-1">
-                                            {{ $item->books->judul_books }}
-                                        </h6>
-                                    </div>
+                                    {{ $item->books->judul_books }}
                                 </td>
-                                <td>{{ $item->borrow->name_borrow ?? 'N/A' }}</td>
+                                <td>
+                                    <a href="{{ route('histori.show', ['id' => $item->id]) }}" class="text-primary"
+                                        style="text-decoration: underline;">
+                                        {{ $item->borrow->name_borrow ?? 'N/A' }}
+                                    </a>
+                                </td>
                                 <td> <span
                                         class="bg-danger-focus text-danger-main px-24 py-4 rounded-pill fw-medium text-sm">{{ $item->status ?? 'N/A' }}</span>
                                 </td>
                                 <td>
-                                    {{ $item->books->rack->code_rack . '&' . $item->books->name_rack }}
+                                    {{ $item->books->rack->code_rack . ' ' . '&' . ' ' . $item->books->name_rack }}
                                 </td>
                                 <td>
                                     <span
                                         class="bg-danger-focus text-danger-main px-24 py-4 rounded-pill fw-medium text-sm">{{ $item->counter ?? 'N/A' }}</span>
                                 </td>
-
-
                             </tr>
                         @endforeach
                     </tbody>

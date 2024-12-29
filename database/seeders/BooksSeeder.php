@@ -15,7 +15,9 @@ class BooksSeeder extends Seeder
      */
     public function run(): void
     {
-        $books = [
+
+
+        $books  = [
             [
                 'isbn_books' => '9781234567890',
                 'judul_books' => 'Introduction to Laravel',
@@ -34,11 +36,49 @@ class BooksSeeder extends Seeder
                 'year_books' => 2021,
                 'publisher_books' => 'Code Publisher',
                 'number_books' => 5,
-                'category_code' => '200-299', // Sesuai kode kategori
-                'rack_code' => 'R002', // Sesuai kode rak
+                'category_code' => '200-299',
+                'rack_code' => 'R002',
                 'gambar' => 'advanced_php.jpg',
             ],
         ];
+
+        // $categories = [
+        //     '100-199' => 1,
+        //     '200-299' => 2,
+        //     '300-399' => 3,
+        //     '400-499' => 4,
+        //     '500-599' => 5,
+        //     '600-699' => 6,
+        //     '700-799' => 7,
+        //     '800-899' => 8,
+        // ];
+
+        // $racks = [
+        //     'R001' => 1,
+        //     'R002' => 2,
+        //     'R003' => 3,
+        // ];
+
+
+        // $books = [];
+
+        // for ($i = 1; $i <= 1000; $i++) {
+            // Tentukan kode kategori dan rak berdasarkan pola tertentu
+            // $category_code = array_keys($categories)[$i % count($categories)];
+            // $rack_code = array_keys($racks)[$i % count($racks)];
+
+        //     $books[] = [
+        //         'isbn_books' => '97800000000' . str_pad($i, 2, '0', STR_PAD_LEFT),
+        //         'judul_books' => 'Book Title ' . $i,
+        //         'autor_books' => 'Author ' . $i,
+        //         'year_books' => 2000 + ($i % 24),
+        //         'publisher_books' => 'Publisher ' . $i,
+        //         'number_books' => rand(1, 20),
+        //         'category_code' => $category_code,
+        //         'rack_code' => $rack_code,
+        //         'gambar' => 'book_' . $i . '.jpg',
+        //     ];
+        // }
 
         foreach ($books as $bookData) {
             // Cari kategori berdasarkan kode

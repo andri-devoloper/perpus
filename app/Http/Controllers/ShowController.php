@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\BooksModel;
+use App\Models\Borrow_DetailModel;
 use App\Models\CategoryModel;
 use App\Models\RackModel;
 use App\Models\SubModel;
@@ -46,5 +47,28 @@ class ShowController extends Controller
         $category = CategoryModel::findOrFail($id);
 
         return view('dashboard.components.show.show-category', compact('user', 'category'));
+    }
+
+    public function Show_DetailBooks($id)
+    {
+        $books = BooksModel::findOrFail($id);
+        return view('detail-buku', compact('books'));
+    }
+
+    public function Show_Back($id)
+    {
+        $user =  Auth::user();
+
+        $books = Borrow_DetailModel::with(['book', 'borrowedByUser', 'book.category', 'book.rack', 'borrow'])
+        ->findOrFail($id);
+        return view('dashboard.components.show.show-back', compact('books', 'user'));
+    }
+    public function Show_History($id)
+    {
+        $user =  Auth::user();
+
+        $books = Borrow_DetailModel::with(['book', 'borrowedByUser', 'returnedByUser', 'book.category', 'book.rack', 'borrow'])
+        ->findOrFail($id);
+        return view('dashboard.components.show.history-back', compact('books', 'user'));
     }
 }

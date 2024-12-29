@@ -68,16 +68,17 @@
                 </a>
             @endforeach
         </div>
-        {{ $book->links('dashboard/components/vendor/pagination/custom') }}
+    </div>
+    {{ $book->links('dashboard/components/vendor/pagination/custom') }}
 
-        {{--  resources\views\dashboard\components\vendor\pagination\custom.blade.php  --}}
-        <script>
-            // Auto-submit the form on keyup in the search input
-            document.getElementById('search-input').addEventListener('keyup', function() {
-                document.getElementById('search-form').submit();
-            });
-            document.getElementById('category-select').addEventListener('change', function() {
-                document.getElementById('search-form').submit();
-            });
-        </script>
-    @endsection
+    {{--  resources\views\dashboard\components\vendor\pagination\custom.blade.php  --}}
+    <script>
+        // Auto-submit the form on keyup in the search input
+        document.getElementById('search-input').addEventListener('keyup', function() {
+            document.getElementById('search-form').submit();
+        });
+        document.getElementById('category-select').addEventListener('change', function() {
+            document.getElementById('search-form').submit();
+        });
+    </script>
+@endsection

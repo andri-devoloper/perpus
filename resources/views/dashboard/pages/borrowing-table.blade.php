@@ -25,13 +25,12 @@
                     <thead>
                         <tr class="cutom-tr-table">
                             <th scope="col">ISBN</th>
-                            <th scope="col">Book Title</th>
-                            <th scope="col">Borrow Name</th>
+                            <th scope="col">Judul Buku</th>
+                            <th scope="col">Nama Peminjam</th>
                             <th scope="col">Status</th>
-                            <th scope="col">Rack</th>
-                            <th scope="col">Book Quantity</th>
-
-                            <th scope="col">Action</th>
+                            <th scope="col">Rak</th>
+                            <th scope="col">Jumlah Buku</th>
+                            <th scope="col">Aksi</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -47,7 +46,12 @@
                                         </h6>
                                     </div>
                                 </td>
-                                <td>{{ $item->borrow->name_borrow ?? 'N/A' }}</td>
+                                <td>
+                                    <a href="{{ route('back.show', ['id' => $item->id]) }}" class="text-primary"
+                                        style="text-decoration: underline;">
+                                        {{ $item->borrow->name_borrow ?? 'N/A' }}
+                                    </a>
+                                </td>
                                 <td> <span
                                         class="bg-success-focus text-success-main px-24 py-4 rounded-pill fw-medium text-sm">{{ $item->status ?? 'N/A' }}</span>
                                 </td>
@@ -64,7 +68,7 @@
                                         action="{{ route('borrow.return_single', ['borrow_id' => $item->borrow->id, 'book_id' => $item->books->id]) }}"
                                         method="POST">
                                         @csrf
-                                        <button type="submit" class="btn btn-warning">Kembalikan Buku</button>
+                                        <button type="submit" class="btn btn-warning">Kembali</button>
                                     </form>
                                 </td>
 

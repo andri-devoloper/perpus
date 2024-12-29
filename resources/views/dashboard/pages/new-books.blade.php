@@ -29,7 +29,7 @@
                             <div class="row gy-3">
                                 <div class="col-12">
                                     <label class="form-label">ISBN</label>
-                                    <input type="text" name="isbn_books" class="form-control"
+                                    <input type="text" name="isbn_books" id="isbn_books" class="form-control"
                                         placeholder="Masukkan ISBN" />
                                 </div>
                                 <div class="col-12">
@@ -87,5 +87,6 @@
                 </div>
             </div>
         </div>
+
     </div>
 @endsection

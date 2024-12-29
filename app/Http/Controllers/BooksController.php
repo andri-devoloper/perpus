@@ -90,7 +90,8 @@ class BooksController extends Controller
             'autor_books' => 'Unknown Author',
             'year_books' => '0000',
             'publisher_books' => 'Unknown Public',
-            'gambar' => ''
+            'gambar' => '',
+            'description' => ''
         ]);
 
         $books->save();
@@ -113,6 +114,7 @@ class BooksController extends Controller
             'year_books' => 'required|digits:4',
             'publisher_books' => 'required|max:255',
             'number_books' => 'required|regex:/^[0-9]+$/|max:255',
+            'description' => 'required'
         ]);
 
         $books->isbn_books = $validated['isbn_books'] ?? $books->isbn_books;
@@ -120,6 +122,7 @@ class BooksController extends Controller
         $books->autor_books = $validated['autor_books'] ?? $books->autor_books;
         $books->year_books = $validated['year_books'] ?? $books->year_books;
         $books->publisher_books = $validated['publisher_books'] ?? $books->publisher_books;
+        $books->description = $validated['description'] ?? $books->description;
 
 
         // dd($books);
@@ -200,18 +203,11 @@ class BooksController extends Controller
         $query->where('id_category', $request->input('category'));
     }
 
-    // Get books after applying the filters
-
-    $book = $query->paginate(6);
-
-    // Get all categories for the dropdown
-    $categories = CategoryModel::all(); // Make sure you have a CategoryModel or equivalent
-
-    // Other data
+    $book = $query->paginate(8);
+    $categories = CategoryModel::all();
     $rack_all = RackModel::all();
     $sub_racks = SubModel::all();
     $user = Auth::user();
-
 
         return view('dashboard.pages.books', compact('book', 'rack_all', 'sub_racks', 'user', 'categories'));
     }
